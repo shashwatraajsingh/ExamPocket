@@ -6,7 +6,6 @@ import { Document, Page, pdfjs } from "react-pdf";
 import {
     ChevronLeft,
     ChevronRight,
-    Download,
     ZoomIn,
     ZoomOut,
     RotateCw,
@@ -23,7 +22,6 @@ import { Separator } from "@/components/ui/separator";
 import { Material, University, NoteCategory } from "@/lib/database.types";
 import { UNIVERSITIES, NOTE_CATEGORIES } from "@/lib/constants";
 import { formatFileSize, formatDate } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/client";
 
 // Set up worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -74,15 +72,6 @@ export function PDFViewerPage({ material }: PDFViewerPageProps) {
         setIsFullscreen(!isFullscreen);
     };
 
-    const handleDownload = async () => {
-        // Increment download count
-        const supabase = createClient();
-        await supabase.rpc("increment_download_count", { material_id: material.id });
-
-        // Trigger download
-        window.open(material.file_url, "_blank");
-    };
-
     return (
         <div
             className={`flex flex-col ${isFullscreen ? "fixed inset-0 z-50 bg-background" : "min-h-screen"
@@ -117,10 +106,6 @@ export function PDFViewerPage({ material }: PDFViewerPageProps) {
                                 </div>
                             </div>
                         </div>
-                        <Button onClick={handleDownload} size="sm" className="shrink-0">
-                            <Download className="mr-2 h-4 w-4" />
-                            <span className="hidden sm:inline">Download</span>
-                        </Button>
                     </div>
                 </div>
             </div>
